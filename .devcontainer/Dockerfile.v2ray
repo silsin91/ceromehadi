@@ -1,0 +1,13 @@
+FROM ghcr.io/v2fly/v2ray:latest-extra AS v2ray
+
+FROM alpine:3.20
+
+RUN apk add --no-cache ca-certificates
+
+COPY --from=v2ray /opt/v2ray /opt/v2ray
+COPY v2ray-entrypoint.sh /usr/local/bin/v2ray-entrypoint
+RUN chmod +x /usr/local/bin/v2ray-entrypoint
+
+ENV PATH="/opt/v2ray/bin:${PATH}"
+
+ENTRYPOINT ["v2ray-entrypoint"]
