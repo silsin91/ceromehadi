@@ -1,0 +1,27 @@
+{
+  "name": "Chrome Docker Codespace",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "runArgs": [
+    "--volume=/var/run/docker.sock:/var/run/docker.sock"
+  ],
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": {
+      "label": "Chrome noVNC + V2Ray",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
+    }
+  },
+  "postCreateCommand": "sudo chmod 666 /var/run/docker.sock || true; docker compose up -d --build",
+  "postStartCommand": "sudo chmod 666 /var/run/docker.sock || true; docker compose up -d",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
