@@ -14,9 +14,11 @@ fi
 PUBLIC_PORT="${PUBLIC_PORT:-6080}"
 XRAY_UUID="${XRAY_UUID:-b831381d-6324-4d53-ad4f-8cda48b30811}"
 XRAY_WS_PATH="${XRAY_WS_PATH:-/vless}"
+XRAY_VMESS_PATH="${XRAY_VMESS_PATH:-/vmess}"
 PUBLIC_TAG="${PUBLIC_TAG:-Chrome-Codespace}"
 VNC_PASSWORD="${VNC_PASSWORD:-codespace}"
 XRAY_PUBLIC_PORT="${XRAY_PUBLIC_PORT:-8080}"
+XRAY_VMESS_PORT="${XRAY_VMESS_PORT:-8081}"
 XRAY_SOCKS_PORT="${XRAY_SOCKS_PORT:-10808}"
 
 PUBLIC_HOST="${PUBLIC_HOST:-}"
@@ -40,7 +42,28 @@ else
   VLESS_SNI=""
 fi
 
-VLESS_LINK="vless://${XRAY_UUID}@${VLESS_HOST}:${VLESS_PORT}?encryption=none&security=${VLESS_SECURITY}&type=ws&host=${VLESS_HOST}${VLESS_SNI}&path=${XRAY_WS_PATH}#${PUBLIC_TAG}"
+VLESS_LINK="vless://${XRAY_UUID}@${VLESS_HOST}:${VLESS_PORT}?encryption=none&security=${VLESS_SECURITY}&type=ws&host=${VLESS_HOST}${VLESS_SNI}&path=${XRAY_WS_PATH}#${PUBLIC_TAG}-VLESS"
+
+VMESS_JSON=$(cat <<EOF
+{
+  "v": "2",
+  "ps": "${PUBLIC_TAG}-VMess",
+  "add": "${VLESS_HOST}",
+  "port": "${VLESS_PORT}",
+  "id": "${XRAY_UUID}",
+  "aid": "0",
+  "scy": "auto",
+  "net": "ws",
+  "type": "none",
+  "host": "${VLESS_HOST}",
+  "path": "${XRAY_VMESS_PATH}",
+  "tls": "${VLESS_SECURITY}",
+  "sni": "${VLESS_HOST}",
+  "alpn": "http/1.1"
+}
+EOF
+)
+VMESS_LINK="vmess://$(echo -n "$VMESS_JSON" | base64 -w 0 2>/dev/null || echo -n "$VMESS_JSON" | base64)"
 
 cat > .devcontainer/vless-config.generated.json <<EOF
 {
@@ -66,6 +89,26 @@ cat > .devcontainer/vless-config.generated.json <<EOF
         "network": "ws",
         "wsSettings": {
           "path": "${XRAY_WS_PATH}"
+        }
+      }
+    },
+    {
+      "tag": "public-vmess-ws",
+      "listen": "0.0.0.0",
+      "port": ${XRAY_VMESS_PORT},
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "${XRAY_UUID}",
+            "alterId": 0
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "${XRAY_VMESS_PATH}"
         }
       }
     },
@@ -112,6 +155,9 @@ echo "${VNC_PASSWORD}"
 echo
 echo "Ready VLESS link:"
 echo "${VLESS_LINK}"
+echo
+echo "Ready VMESS link:"
+echo "${VMESS_LINK}"
 echo "========================================================"
 echo
 
