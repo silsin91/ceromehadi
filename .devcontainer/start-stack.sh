@@ -26,7 +26,7 @@ if [ -z "${PUBLIC_HOST}" ] && [ -n "${CODESPACE_NAME:-}" ] && [ -n "${GITHUB_COD
   PUBLIC_HOST="${CODESPACE_NAME}-${PUBLIC_PORT}.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
 fi
 
-NOVNC_QUERY="vnc.html?autoconnect=true&resize=scale&password=${VNC_PASSWORD}"
+NOVNC_QUERY="vnc.html?autoconnect=true&resize=scale&password=${VNC_PASSWORD}&quality=9&compression=0"
 
 if [ -n "${PUBLIC_HOST}" ]; then
   NOVNC_URL="https://${PUBLIC_HOST}/${NOVNC_QUERY}"
