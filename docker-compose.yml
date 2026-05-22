@@ -6,8 +6,8 @@ services:
     shm_size: 2gb
     environment:
       DISPLAY: ":99"
-      SCREEN_WIDTH: "${SCREEN_WIDTH:-1365}"
-      SCREEN_HEIGHT: "${SCREEN_HEIGHT:-768}"
+      SCREEN_WIDTH: "${SCREEN_WIDTH:-1920}"
+      SCREEN_HEIGHT: "${SCREEN_HEIGHT:-1080}"
       SCREEN_DEPTH: "${SCREEN_DEPTH:-24}"
       VNC_PASSWORD: "${VNC_PASSWORD:-codespace}"
       CHROME_PROXY_SERVER: "${CHROME_PROXY_SERVER-socks5://v2ray:10808}"
@@ -23,7 +23,7 @@ services:
     image: theasp/novnc:latest
     environment:
       VNC_SERVER: "chrome:5900"
-      RESOLUTION: "${SCREEN_WIDTH:-1365},${SCREEN_HEIGHT:-768}"
+      RESOLUTION: "${SCREEN_WIDTH:-1920},${SCREEN_HEIGHT:-1080}"
       RUN_XTERM: "no"
       RUN_FLUXBOX: "no"
     command: >
