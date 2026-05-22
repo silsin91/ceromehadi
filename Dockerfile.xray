@@ -1,0 +1,11 @@
+FROM ghcr.io/xtls/xray-core:latest AS xray
+
+FROM alpine:3.20
+
+RUN apk add --no-cache ca-certificates
+
+COPY --from=xray /usr/local/bin/xray /usr/local/bin/xray
+COPY xray-entrypoint.sh /usr/local/bin/xray-entrypoint
+RUN chmod +x /usr/local/bin/xray-entrypoint
+
+ENTRYPOINT ["xray-entrypoint"]

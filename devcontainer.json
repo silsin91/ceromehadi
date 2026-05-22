@@ -1,0 +1,27 @@
+{
+  "name": "Chrome Docker Codespace",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "runArgs": [
+    "--volume=/var/run/docker.sock:/var/run/docker.sock"
+  ],
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": {
+      "label": "Chrome noVNC + VLESS",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/start-stack.sh --build",
+  "postStartCommand": "bash .devcontainer/start-stack.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
