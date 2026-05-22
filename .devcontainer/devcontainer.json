@@ -10,13 +10,13 @@
   "forwardPorts": [6080],
   "portsAttributes": {
     "6080": {
-      "label": "Chrome noVNC + V2Ray",
+      "label": "Chrome noVNC + VLESS",
       "onAutoForward": "openBrowser",
       "visibility": "public"
     }
   },
-  "postCreateCommand": "sudo chmod 666 /var/run/docker.sock || true; docker compose up -d --build",
-  "postStartCommand": "sudo chmod 666 /var/run/docker.sock || true; docker compose up -d",
+  "postCreateCommand": "bash .devcontainer/start-stack.sh --build",
+  "postStartCommand": "bash .devcontainer/start-stack.sh",
   "customizations": {
     "vscode": {
       "extensions": [

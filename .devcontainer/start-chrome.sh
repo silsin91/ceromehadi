@@ -10,7 +10,7 @@ VNC_PORT="${VNC_PORT:-5900}"
 VNC_PASSWORD="${VNC_PASSWORD:-codespace}"
 CHROME_PROFILE_DIR="${CHROME_PROFILE_DIR:-/data/chrome}"
 CHROME_DOWNLOAD_DIR="${CHROME_DOWNLOAD_DIR:-/data/downloads}"
-CHROME_PROXY_SERVER="${CHROME_PROXY_SERVER-socks5://v2ray:10808}"
+CHROME_PROXY_SERVER="${CHROME_PROXY_SERVER-socks5://xray:10808}"
 
 export DISPLAY XDG_RUNTIME_DIR=/tmp/runtime-chrome
 mkdir -p "${XDG_RUNTIME_DIR}" "${CHROME_PROFILE_DIR}" "${CHROME_DOWNLOAD_DIR}" /tmp/.X11-unix
@@ -76,7 +76,12 @@ fi
 google-chrome-stable "${CHROME_FLAGS[@]}" "about:blank" >/tmp/chrome.log 2>&1 &
 chrome_pid="$!"
 
-echo "Chrome: http://localhost:${NOVNC_PORT}/vnc.html"
+echo
+echo "================ Chrome noVNC ================"
+echo "Chrome URL: http://localhost:${NOVNC_PORT}/vnc.html?autoconnect=true&resize=scale&password=${VNC_PASSWORD}"
 echo "VNC password: ${VNC_PASSWORD}"
+echo "Chrome proxy: ${CHROME_PROXY_SERVER:-direct}"
+echo "=============================================="
+echo
 
 wait "${chrome_pid}"
