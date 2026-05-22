@@ -15,10 +15,8 @@ RUN apt-get update \
         fonts-noto-color-emoji \
         gnupg \
         jq \
-        novnc \
         procps \
         tzdata \
-        websockify \
         wget \
         x11-xkb-utils \
         x11vnc \
@@ -44,7 +42,7 @@ RUN chmod +x /usr/local/bin/start-chrome \
     && mkdir -p /data/chrome /data/downloads \
     && chmod -R 0777 /data
 
-EXPOSE 5900 6080
+EXPOSE 5900
 WORKDIR /data
 
 CMD ["start-chrome"]

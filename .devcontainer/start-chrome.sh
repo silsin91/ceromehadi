@@ -5,12 +5,11 @@ DISPLAY="${DISPLAY:-:99}"
 SCREEN_WIDTH="${SCREEN_WIDTH:-1365}"
 SCREEN_HEIGHT="${SCREEN_HEIGHT:-768}"
 SCREEN_DEPTH="${SCREEN_DEPTH:-24}"
-NOVNC_PORT="${NOVNC_PORT:-6080}"
 VNC_PORT="${VNC_PORT:-5900}"
 VNC_PASSWORD="${VNC_PASSWORD:-codespace}"
 CHROME_PROFILE_DIR="${CHROME_PROFILE_DIR:-/data/chrome}"
 CHROME_DOWNLOAD_DIR="${CHROME_DOWNLOAD_DIR:-/data/downloads}"
-CHROME_PROXY_SERVER="${CHROME_PROXY_SERVER-socks5://xray:10808}"
+CHROME_PROXY_SERVER="${CHROME_PROXY_SERVER-socks5://v2ray:10808}"
 
 export DISPLAY XDG_RUNTIME_DIR=/tmp/runtime-chrome
 mkdir -p "${XDG_RUNTIME_DIR}" "${CHROME_PROFILE_DIR}" "${CHROME_DOWNLOAD_DIR}" /tmp/.X11-unix
@@ -43,12 +42,6 @@ x11vnc \
   -defer 10 \
   -quiet >/tmp/x11vnc.log 2>&1 &
 
-websockify \
-  --web=/usr/share/novnc/ \
-  --heartbeat=30 \
-  "${NOVNC_PORT}" \
-  "127.0.0.1:${VNC_PORT}" >/tmp/websockify.log 2>&1 &
-
 CHROME_FLAGS=(
   "--no-sandbox"
   "--no-first-run"
@@ -78,7 +71,7 @@ chrome_pid="$!"
 
 echo
 echo "================ Chrome noVNC ================"
-echo "Chrome URL: http://localhost:${NOVNC_PORT}/vnc.html?autoconnect=true&resize=scale&password=${VNC_PASSWORD}"
+echo "VNC server: chrome:${VNC_PORT}"
 echo "VNC password: ${VNC_PASSWORD}"
 echo "Chrome proxy: ${CHROME_PROXY_SERVER:-direct}"
 echo "=============================================="
