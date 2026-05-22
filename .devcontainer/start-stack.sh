@@ -31,15 +31,16 @@ if [ -n "${PUBLIC_HOST}" ]; then
   VLESS_HOST="${PUBLIC_HOST}"
   VLESS_PORT="443"
   VLESS_SECURITY="tls"
+  VLESS_SNI="&sni=${VLESS_HOST}&alpn=http/1.1"
 else
   NOVNC_URL="http://localhost:${PUBLIC_PORT}/${NOVNC_QUERY}"
-  VLESS_HOST="localhost"
+  VLESS_HOST="127.0.0.1"
   VLESS_PORT="${PUBLIC_PORT}"
   VLESS_SECURITY="none"
+  VLESS_SNI=""
 fi
 
-ENCODED_PATH="${XRAY_WS_PATH//\//%2F}"
-VLESS_LINK="vless://${XRAY_UUID}@${VLESS_HOST}:${VLESS_PORT}?encryption=none&security=${VLESS_SECURITY}&type=ws&host=${VLESS_HOST}&sni=${VLESS_HOST}&path=${ENCODED_PATH}#${PUBLIC_TAG}"
+VLESS_LINK="vless://${XRAY_UUID}@${VLESS_HOST}:${VLESS_PORT}?encryption=none&security=${VLESS_SECURITY}&type=ws&host=${VLESS_HOST}${VLESS_SNI}&path=${XRAY_WS_PATH}#${PUBLIC_TAG}"
 
 cat > .devcontainer/vless-config.generated.json <<EOF
 {

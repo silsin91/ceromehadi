@@ -15,6 +15,10 @@ export DISPLAY XDG_RUNTIME_DIR=/tmp/runtime-chrome
 mkdir -p "${XDG_RUNTIME_DIR}" "${CHROME_PROFILE_DIR}" "${CHROME_DOWNLOAD_DIR}" /tmp/.X11-unix
 chmod 700 "${XDG_RUNTIME_DIR}"
 
+# Clean up old locks to prevent startup failures after restart
+rm -f /tmp/.X11-unix/X* /tmp/.X99-lock 2>/dev/null || true
+rm -f "${CHROME_PROFILE_DIR}/SingletonLock" 2>/dev/null || true
+
 cleanup() {
   jobs -p | xargs -r kill 2>/dev/null || true
 }
@@ -35,11 +39,6 @@ x11vnc \
   -repeat \
   -rfbport "${VNC_PORT}" \
   -passwd "${VNC_PASSWORD}" \
-  -noxdamage \
-  -noxfixes \
-  -noxrecord \
-  -wait 5 \
-  -defer 10 \
   -quiet >/tmp/x11vnc.log 2>&1 &
 
 CHROME_FLAGS=(
@@ -66,9 +65,6 @@ if [ -n "${CHROME_PROXY_SERVER}" ]; then
   CHROME_FLAGS+=("--proxy-server=${CHROME_PROXY_SERVER}")
 fi
 
-google-chrome-stable "${CHROME_FLAGS[@]}" "about:blank" >/tmp/chrome.log 2>&1 &
-chrome_pid="$!"
-
 echo
 echo "================ Chrome noVNC ================"
 echo "VNC server: chrome:${VNC_PORT}"
@@ -77,4 +73,7 @@ echo "Chrome proxy: ${CHROME_PROXY_SERVER:-direct}"
 echo "=============================================="
 echo
 
-wait "${chrome_pid}"
+while true; do
+  google-chrome-stable "${CHROME_FLAGS[@]}" "about:blank" >/tmp/chrome.log 2>&1
+  sleep 2
+done
