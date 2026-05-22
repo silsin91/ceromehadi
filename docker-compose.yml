@@ -36,6 +36,8 @@ services:
 
   v2ray:
     image: teddysun/xray:latest
+    ports:
+      - "10808:10808"
     volumes:
       - ./.devcontainer/vless-config.generated.json:/etc/xray/config.json:ro
     restart: unless-stopped
