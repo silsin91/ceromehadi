@@ -7,12 +7,17 @@
   "runArgs": [
     "--volume=/var/run/docker.sock:/var/run/docker.sock"
   ],
-  "forwardPorts": [6080],
+  "forwardPorts": [6080, 10808],
   "portsAttributes": {
     "6080": {
       "label": "Chrome noVNC + VLESS",
       "onAutoForward": "openBrowser",
       "visibility": "public"
+    },
+    "10808": {
+      "label": "Direct SOCKS5 Proxy",
+      "onAutoForward": "silent",
+      "visibility": "private"
     }
   },
   "postCreateCommand": "bash .devcontainer/start-stack.sh --build",

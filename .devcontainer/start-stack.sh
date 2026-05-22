@@ -65,6 +65,8 @@ EOF
 )
 VMESS_LINK="vmess://$(echo -n "$VMESS_JSON" | base64 -w 0 2>/dev/null || echo -n "$VMESS_JSON" | base64)"
 
+VLESS_GRPC_LINK="vless://${XRAY_UUID}@${VLESS_HOST}:${VLESS_PORT}?encryption=none&security=${VLESS_SECURITY}&type=grpc&host=${VLESS_HOST}${VLESS_SNI}&serviceName=vless-grpc&mode=multi#${PUBLIC_TAG}-gRPC"
+
 cat > .devcontainer/vless-config.generated.json <<EOF
 {
   "log": {
@@ -89,6 +91,27 @@ cat > .devcontainer/vless-config.generated.json <<EOF
         "network": "ws",
         "wsSettings": {
           "path": "${XRAY_WS_PATH}"
+        }
+      }
+    },
+    {
+      "tag": "public-vless-grpc",
+      "listen": "0.0.0.0",
+      "port": 8082,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "${XRAY_UUID}",
+            "flow": ""
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "grpc",
+        "grpcSettings": {
+          "serviceName": "vless-grpc"
         }
       }
     },
@@ -158,6 +181,9 @@ echo "${VLESS_LINK}"
 echo
 echo "Ready VMESS link:"
 echo "${VMESS_LINK}"
+echo
+echo "Ready gRPC link (For bypass):"
+echo "${VLESS_GRPC_LINK}"
 echo "========================================================"
 echo
 
