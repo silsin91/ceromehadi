@@ -64,7 +64,7 @@ XRAY_UUID=b831381d-6324-4d53-ad4f-8cda48b30811
 XRAY_WS_PATH=/vless
 PUBLIC_TAG=Chrome-Codespace
 
-CHROME_PROXY_SERVER=socks5://xray:10808
+CHROME_PROXY_SERVER=socks5://v2ray:10808
 ```
 
 For better noVNC speed, keep the resolution near `1365x768` or lower.
@@ -88,7 +88,7 @@ Check services:
 ```bash
 docker compose ps
 docker compose logs -f chrome
-docker compose logs -f xray
+docker compose logs -f v2ray
 docker compose logs -f gateway
 ```
 
@@ -104,10 +104,9 @@ docker compose down
 - `.devcontainer/start-stack.sh`: starts the stack, prints Chrome URL, prints VLESS link, opens noVNC.
 - `.devcontainer/Dockerfile`: lightweight devcontainer with Docker Compose v2.
 - `.devcontainer/Dockerfile.chrome`: Chrome/noVNC runtime image.
-- `.devcontainer/Dockerfile.xray`: Xray runtime image for VLESS.
 - `.devcontainer/start-chrome.sh`: starts Xvfb, Fluxbox, x11vnc, noVNC, and Chrome.
-- `.devcontainer/xray-entrypoint.sh`: generates Xray VLESS + SOCKS config from `.env`.
-- `.devcontainer/nginx.conf`: routes `/vless` to Xray and everything else to noVNC.
+- `.devcontainer/vless-config.generated.json`: generated VLESS + SOCKS config used by the V2Fly container.
+- `.devcontainer/nginx.conf`: routes `/vless` to V2Fly and everything else to noVNC.
 - `docker-compose.yml`: service orchestration.
 
 ## Troubleshooting
